@@ -1,0 +1,31 @@
+%% memucs-manual.ist
+%%
+%% Copyright (c) 2007-2013 Kangsoo Kim <karnes at ktug org>
+%%
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3c
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%  http://www.latex-project.org/lppl.txt
+%% and version 1.3c or later is part of all distributions of LaTeX
+%% version 2006/05/20 or later.
+%%
+%% @ is a valid character in some entries
+actual '?' % ? instead of @
+
+preamble	"\\begin{theindex}\n
+\\def\\hindexhead#1{\\ifcase#1가\\or 나\\or 다\\or 라\\or
+  마\\or 바\\or 사\\or ㅿ\\or 아\\or ㆁ\\or 자\\or 차\\or 카\\or
+  타\\or 파\\or 하\\or ㆆ\\or ㅏ\\or ㅑ\\or ㅓ\\or ㅕ\\or ㅗ\\or
+  ㅛ\\or ㅜ\\or ㅠ\\or ㅡ\\or ㅣ\\or ㆍ\\else 종성\\fi}\n\n"
+\\def\\indexhead#1{#1}\n\n"
+headings_flag	    1
+group_skip          "\n\n\\indexspace\n"
+item_0              "\n\\item "
+heading_prefix      "【\\indexhead{"
+heading_suffix      "}】\\nopagebreak\n"
+symhead_positive    "기호"
+numhead_positive    "숫자"
+delim_0             "\\dotfill "
+delim_1             "\\dotfill "
+delim_2             "\\dotfill "
