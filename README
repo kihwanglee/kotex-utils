@@ -29,7 +29,7 @@ Files
 	kotex.ist -> makeindex/kotex-utils/
 	memucs-manual.ist -> makeindex/kotex-utils/
 
-### Xindy
+### Xindy styles
 
 	utf8-lang.xdy -> xindy/modules/lang/korean
 	utf8.xdy -> xindy/modules/lang/korean
