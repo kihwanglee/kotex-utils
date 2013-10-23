@@ -2,7 +2,7 @@
 
 # jamo-normalize.pl
 #
-# Copyright (c) 2007-2013 Dohyun Kim <nomos at ktug org>
+# Copyright (c) 2013 Dohyun Kim <nomos at ktug org>
 #
 # This work may be distributed and/or modified under the
 # conditions of the LaTeX Project Public License, either version 1.3c
@@ -15,25 +15,28 @@
 #use strict;
 #use warnings;
 
-my ($opt_b, $opt_p, $opt_d, $opt_o, $opt_t, $opt_r);
+my %OPT;
 
 while (@ARGV) {
   my $opt = shift @ARGV;
-  if	($opt =~ /-b/i) { $opt_b = 1 }
-  elsif	($opt =~ /-p/i) { $opt_p = 1 }
-  elsif	($opt =~ /-d/i) { $opt_d = 1 }
-  elsif ($opt =~ /-o/i) { $opt_o = 1 }
-  elsif ($opt =~ /-t/i) { $opt_t = 1 }
-  elsif ($opt =~ /-r/i) { $opt_r = 1 }
-  else			{
+  if    ($opt =~ /-b/i) { $OPT{boundary}    = 1 }
+  elsif ($opt =~ /-p/i) { $OPT{topua}       = 1 }
+  elsif ($opt =~ /-d/i) { $OPT{decompose}   = 1 }
+  elsif ($opt =~ /-o/i) { $OPT{frompua}     = 1 }
+  elsif ($opt =~ /-t/i) { $OPT{latintm}     = 1 }
+  elsif ($opt =~ /-r/i) { $OPT{reordertm}   = 1 }
+  elsif ($opt =~ /-i/i) { $OPT{normalhanja} = 1 }
+  else  {
     print
-    "Usage: $0 [-b] [-d] [-o] [-p] [-t] < in_file > out_file\n\n",
+    "Usage: $0 [-b] [-d] [-i] [-o] [-p] [-r] [-t] < in_file > out_file\n\n",
     "Translate Hangul Jamo sequence to Hangul Syllables\n\n",
     "  -b :  insert ZWS between syllable blocks (not for practical use)\n",
     "  -d :  decomposition only, and no more\n",
+    "  -i :  convert compatibility hanja to normal hanja\n",
     "  -o :  decompose PUA Old Hangul Syllables to Jamo sequence\n",
     "  -p :  compose Jamo sequence to PUA Old Hangul Syllables\n",
     "  -r :  reorder Hangul Tone Marks to the first of syllable block\n",
+    "        (not for practical use)\n",
     "  -t :  convert U+00B7 or U+003A to Hangul Tone Marks\n";
     exit;
   }
@@ -91,7 +94,7 @@ my %jamo2cjamo	= (
 );
 
 my @HYpuaJamo;
-if ($opt_o or $opt_p) { @HYpuaJamo = arr_hypua2jamo(); }
+if ($OPT{frompua} or $OPT{topua}) { @HYpuaJamo = arr_hypua2jamo(); }
 
 ##### main routine #####
 
@@ -101,20 +104,21 @@ binmode (STDOUT,":utf8");
 while (<>) {
   print STDERR ".";
   &syllable2jamo;
-  if ($opt_o) {
+  if ($OPT{frompua}) {
     &hypua2jamo;
     &hypuasingle2jamo;
   }
   &compose_jamo;
   &insert_filler;
-  &ascii2tonemark if $opt_t;
-  &insert_boundary if $opt_b;
-  &reorder_tonemark if $opt_r;
-  unless ($opt_d) {
-    &jamo2hypua if $opt_p;
+  &ascii2tonemark if $OPT{latintm};
+  &insert_boundary if $OPT{boundary};
+  &reorder_tonemark if $OPT{reordertm};
+  unless ($OPT{decompose}) {
+    &jamo2hypua if $OPT{topua};
     &jamo2syllable;
     &jamo2jamocomp;
   }
+  &normalize_hanja if $OPT{normalhanja};
   print;
 }
 
@@ -243,6 +247,277 @@ sub do_jamo2jamocomp {
   return "$jamo\x{1160}" if $jamo =~ /[$cho]/;
   return "\x{115F}$jamo" if $jamo =~ /[$jung]/;
   return "\x{115F}\x{1160}$jamo" if $jamo =~ /[$jong]/;
+}
+
+sub normalize_hanja {
+  s/\x{F900}/\x{8C48}/g;
+  s/\x{F901}/\x{66F4}/g;
+  s/\x{F902}/\x{8ECA}/g;
+  s/\x{F903}/\x{8CC8}/g;
+  s/\x{F904}/\x{6ED1}/g;
+  s/\x{F905}/\x{4E32}/g;
+  s/\x{F906}/\x{53E5}/g;
+  s/\x{F907}/\x{9F9C}/g;
+  s/\x{F908}/\x{9F9C}/g;
+  s/\x{F909}/\x{5951}/g;
+  s/\x{F90A}/\x{91D1}/g;
+  s/\x{F90B}/\x{5587}/g;
+  s/\x{F90C}/\x{5948}/g;
+  s/\x{F90D}/\x{61F6}/g;
+  s/\x{F90E}/\x{7669}/g;
+  s/\x{F90F}/\x{7F85}/g;
+  s/\x{F910}/\x{863F}/g;
+  s/\x{F911}/\x{87BA}/g;
+  s/\x{F912}/\x{88F8}/g;
+  s/\x{F913}/\x{908F}/g;
+  s/\x{F914}/\x{6A02}/g;
+  s/\x{F915}/\x{6D1B}/g;
+  s/\x{F916}/\x{70D9}/g;
+  s/\x{F917}/\x{73DE}/g;
+  s/\x{F918}/\x{843D}/g;
+  s/\x{F919}/\x{916A}/g;
+  s/\x{F91A}/\x{99F1}/g;
+  s/\x{F91B}/\x{4E82}/g;
+  s/\x{F91C}/\x{5375}/g;
+  s/\x{F91D}/\x{6B04}/g;
+  s/\x{F91E}/\x{721B}/g;
+  s/\x{F91F}/\x{862D}/g;
+  s/\x{F920}/\x{9E1E}/g;
+  s/\x{F921}/\x{5D50}/g;
+  s/\x{F922}/\x{6FEB}/g;
+  s/\x{F923}/\x{85CD}/g;
+  s/\x{F924}/\x{8964}/g;
+  s/\x{F925}/\x{62C9}/g;
+  s/\x{F926}/\x{81D8}/g;
+  s/\x{F927}/\x{881F}/g;
+  s/\x{F928}/\x{5ECA}/g;
+  s/\x{F929}/\x{6717}/g;
+  s/\x{F92A}/\x{6D6A}/g;
+  s/\x{F92B}/\x{72FC}/g;
+  s/\x{F92C}/\x{90DE}/g;
+  s/\x{F92D}/\x{4F86}/g;
+  s/\x{F92E}/\x{51B7}/g;
+  s/\x{F92F}/\x{52DE}/g;
+  s/\x{F930}/\x{64C4}/g;
+  s/\x{F931}/\x{6AD3}/g;
+  s/\x{F932}/\x{7210}/g;
+  s/\x{F933}/\x{76E7}/g;
+  s/\x{F934}/\x{8001}/g;
+  s/\x{F935}/\x{8606}/g;
+  s/\x{F936}/\x{865C}/g;
+  s/\x{F937}/\x{8DEF}/g;
+  s/\x{F938}/\x{9732}/g;
+  s/\x{F939}/\x{9B6F}/g;
+  s/\x{F93A}/\x{9DFA}/g;
+  s/\x{F93B}/\x{788C}/g;
+  s/\x{F93C}/\x{797F}/g;
+  s/\x{F93D}/\x{7DA0}/g;
+  s/\x{F93E}/\x{83C9}/g;
+  s/\x{F93F}/\x{9304}/g;
+  s/\x{F940}/\x{9E7F}/g;
+  s/\x{F941}/\x{8AD6}/g;
+  s/\x{F942}/\x{58DF}/g;
+  s/\x{F943}/\x{5F04}/g;
+  s/\x{F944}/\x{7C60}/g;
+  s/\x{F945}/\x{807E}/g;
+  s/\x{F946}/\x{7262}/g;
+  s/\x{F947}/\x{78CA}/g;
+  s/\x{F948}/\x{8CC2}/g;
+  s/\x{F949}/\x{96F7}/g;
+  s/\x{F94A}/\x{58D8}/g;
+  s/\x{F94B}/\x{5C62}/g;
+  s/\x{F94C}/\x{6A13}/g;
+  s/\x{F94D}/\x{6DDA}/g;
+  s/\x{F94E}/\x{6F0F}/g;
+  s/\x{F94F}/\x{7D2F}/g;
+  s/\x{F950}/\x{7E37}/g;
+  s/\x{F951}/\x{964B}/g;
+  s/\x{F952}/\x{52D2}/g;
+  s/\x{F953}/\x{808B}/g;
+  s/\x{F954}/\x{51DC}/g;
+  s/\x{F955}/\x{51CC}/g;
+  s/\x{F956}/\x{7A1C}/g;
+  s/\x{F957}/\x{7DBE}/g;
+  s/\x{F958}/\x{83F1}/g;
+  s/\x{F959}/\x{9675}/g;
+  s/\x{F95A}/\x{8B80}/g;
+  s/\x{F95B}/\x{62CF}/g;
+  s/\x{F95C}/\x{6A02}/g;
+  s/\x{F95D}/\x{8AFE}/g;
+  s/\x{F95E}/\x{4E39}/g;
+  s/\x{F95F}/\x{5BE7}/g;
+  s/\x{F960}/\x{6012}/g;
+  s/\x{F961}/\x{7387}/g;
+  s/\x{F962}/\x{7570}/g;
+  s/\x{F963}/\x{5317}/g;
+  s/\x{F964}/\x{78FB}/g;
+  s/\x{F965}/\x{4FBF}/g;
+  s/\x{F966}/\x{5FA9}/g;
+  s/\x{F967}/\x{4E0D}/g;
+  s/\x{F968}/\x{6CCC}/g;
+  s/\x{F969}/\x{6578}/g;
+  s/\x{F96A}/\x{7D22}/g;
+  s/\x{F96B}/\x{53C3}/g;
+  s/\x{F96C}/\x{585E}/g;
+  s/\x{F96D}/\x{7701}/g;
+  s/\x{F96E}/\x{8449}/g;
+  s/\x{F96F}/\x{8AAA}/g;
+  s/\x{F970}/\x{6BBA}/g;
+  s/\x{F971}/\x{8FB0}/g;
+  s/\x{F972}/\x{6C88}/g;
+  s/\x{F973}/\x{62FE}/g;
+  s/\x{F974}/\x{82E5}/g;
+  s/\x{F975}/\x{63A0}/g;
+  s/\x{F976}/\x{7565}/g;
+  s/\x{F977}/\x{4EAE}/g;
+  s/\x{F978}/\x{5169}/g;
+  s/\x{F979}/\x{51C9}/g;
+  s/\x{F97A}/\x{6881}/g;
+  s/\x{F97B}/\x{7CE7}/g;
+  s/\x{F97C}/\x{826F}/g;
+  s/\x{F97D}/\x{8AD2}/g;
+  s/\x{F97E}/\x{91CF}/g;
+  s/\x{F97F}/\x{52F5}/g;
+  s/\x{F980}/\x{5442}/g;
+  s/\x{F981}/\x{5973}/g;
+  s/\x{F982}/\x{5EEC}/g;
+  s/\x{F983}/\x{65C5}/g;
+  s/\x{F984}/\x{6FFE}/g;
+  s/\x{F985}/\x{792A}/g;
+  s/\x{F986}/\x{95AD}/g;
+  s/\x{F987}/\x{9A6A}/g;
+  s/\x{F988}/\x{9E97}/g;
+  s/\x{F989}/\x{9ECE}/g;
+  s/\x{F98A}/\x{529B}/g;
+  s/\x{F98B}/\x{66C6}/g;
+  s/\x{F98C}/\x{6B77}/g;
+  s/\x{F98D}/\x{8F62}/g;
+  s/\x{F98E}/\x{5E74}/g;
+  s/\x{F98F}/\x{6190}/g;
+  s/\x{F990}/\x{6200}/g;
+  s/\x{F991}/\x{649A}/g;
+  s/\x{F992}/\x{6F23}/g;
+  s/\x{F993}/\x{7149}/g;
+  s/\x{F994}/\x{7489}/g;
+  s/\x{F995}/\x{79CA}/g;
+  s/\x{F996}/\x{7DF4}/g;
+  s/\x{F997}/\x{806F}/g;
+  s/\x{F998}/\x{8F26}/g;
+  s/\x{F999}/\x{84EE}/g;
+  s/\x{F99A}/\x{9023}/g;
+  s/\x{F99B}/\x{934A}/g;
+  s/\x{F99C}/\x{5217}/g;
+  s/\x{F99D}/\x{52A3}/g;
+  s/\x{F99E}/\x{54BD}/g;
+  s/\x{F99F}/\x{70C8}/g;
+  s/\x{F9A0}/\x{88C2}/g;
+  s/\x{F9A1}/\x{8AAA}/g;
+  s/\x{F9A2}/\x{5EC9}/g;
+  s/\x{F9A3}/\x{5FF5}/g;
+  s/\x{F9A4}/\x{637B}/g;
+  s/\x{F9A5}/\x{6BAE}/g;
+  s/\x{F9A6}/\x{7C3E}/g;
+  s/\x{F9A7}/\x{7375}/g;
+  s/\x{F9A8}/\x{4EE4}/g;
+  s/\x{F9A9}/\x{56F9}/g;
+  s/\x{F9AA}/\x{5BE7}/g;
+  s/\x{F9AB}/\x{5DBA}/g;
+  s/\x{F9AC}/\x{601C}/g;
+  s/\x{F9AD}/\x{73B2}/g;
+  s/\x{F9AE}/\x{7469}/g;
+  s/\x{F9AF}/\x{7F9A}/g;
+  s/\x{F9B0}/\x{8046}/g;
+  s/\x{F9B1}/\x{9234}/g;
+  s/\x{F9B2}/\x{96F6}/g;
+  s/\x{F9B3}/\x{9748}/g;
+  s/\x{F9B4}/\x{9818}/g;
+  s/\x{F9B5}/\x{4F8B}/g;
+  s/\x{F9B6}/\x{79AE}/g;
+  s/\x{F9B7}/\x{91B4}/g;
+  s/\x{F9B8}/\x{96B7}/g;
+  s/\x{F9B9}/\x{60E1}/g;
+  s/\x{F9BA}/\x{4E86}/g;
+  s/\x{F9BB}/\x{50DA}/g;
+  s/\x{F9BC}/\x{5BEE}/g;
+  s/\x{F9BD}/\x{5C3F}/g;
+  s/\x{F9BE}/\x{6599}/g;
+  s/\x{F9BF}/\x{6A02}/g;
+  s/\x{F9C0}/\x{71CE}/g;
+  s/\x{F9C1}/\x{7642}/g;
+  s/\x{F9C2}/\x{84FC}/g;
+  s/\x{F9C3}/\x{907C}/g;
+  s/\x{F9C4}/\x{9F8D}/g;
+  s/\x{F9C5}/\x{6688}/g;
+  s/\x{F9C6}/\x{962E}/g;
+  s/\x{F9C7}/\x{5289}/g;
+  s/\x{F9C8}/\x{677B}/g;
+  s/\x{F9C9}/\x{67F3}/g;
+  s/\x{F9CA}/\x{6D41}/g;
+  s/\x{F9CB}/\x{6E9C}/g;
+  s/\x{F9CC}/\x{7409}/g;
+  s/\x{F9CD}/\x{7559}/g;
+  s/\x{F9CE}/\x{786B}/g;
+  s/\x{F9CF}/\x{7D10}/g;
+  s/\x{F9D0}/\x{985E}/g;
+  s/\x{F9D1}/\x{516D}/g;
+  s/\x{F9D2}/\x{622E}/g;
+  s/\x{F9D3}/\x{9678}/g;
+  s/\x{F9D4}/\x{502B}/g;
+  s/\x{F9D5}/\x{5D19}/g;
+  s/\x{F9D6}/\x{6DEA}/g;
+  s/\x{F9D7}/\x{8F2A}/g;
+  s/\x{F9D8}/\x{5F8B}/g;
+  s/\x{F9D9}/\x{6144}/g;
+  s/\x{F9DA}/\x{6817}/g;
+  s/\x{F9DB}/\x{7387}/g;
+  s/\x{F9DC}/\x{9686}/g;
+  s/\x{F9DD}/\x{5229}/g;
+  s/\x{F9DE}/\x{540F}/g;
+  s/\x{F9DF}/\x{5C65}/g;
+  s/\x{F9E0}/\x{6613}/g;
+  s/\x{F9E1}/\x{674E}/g;
+  s/\x{F9E2}/\x{68A8}/g;
+  s/\x{F9E3}/\x{6CE5}/g;
+  s/\x{F9E4}/\x{7406}/g;
+  s/\x{F9E5}/\x{75E2}/g;
+  s/\x{F9E6}/\x{7F79}/g;
+  s/\x{F9E7}/\x{88CF}/g;
+  s/\x{F9E8}/\x{88E1}/g;
+  s/\x{F9E9}/\x{91CC}/g;
+  s/\x{F9EA}/\x{96E2}/g;
+  s/\x{F9EB}/\x{533F}/g;
+  s/\x{F9EC}/\x{6EBA}/g;
+  s/\x{F9ED}/\x{541D}/g;
+  s/\x{F9EE}/\x{71D0}/g;
+  s/\x{F9EF}/\x{7498}/g;
+  s/\x{F9F0}/\x{85FA}/g;
+  s/\x{F9F1}/\x{96A3}/g;
+  s/\x{F9F2}/\x{9C57}/g;
+  s/\x{F9F3}/\x{9E9F}/g;
+  s/\x{F9F4}/\x{6797}/g;
+  s/\x{F9F5}/\x{6DCB}/g;
+  s/\x{F9F6}/\x{81E8}/g;
+  s/\x{F9F7}/\x{7ACB}/g;
+  s/\x{F9F8}/\x{7B20}/g;
+  s/\x{F9F9}/\x{7C92}/g;
+  s/\x{F9FA}/\x{72C0}/g;
+  s/\x{F9FB}/\x{7099}/g;
+  s/\x{F9FC}/\x{8B58}/g;
+  s/\x{F9FD}/\x{4EC0}/g;
+  s/\x{F9FE}/\x{8336}/g;
+  s/\x{F9FF}/\x{523A}/g;
+  s/\x{FA00}/\x{5207}/g;
+  s/\x{FA01}/\x{5EA6}/g;
+  s/\x{FA02}/\x{62D3}/g;
+  s/\x{FA03}/\x{7CD6}/g;
+  s/\x{FA04}/\x{5B85}/g;
+  s/\x{FA05}/\x{6D1E}/g;
+  s/\x{FA06}/\x{66B4}/g;
+  s/\x{FA07}/\x{8F3B}/g;
+  s/\x{FA08}/\x{884C}/g;
+  s/\x{FA09}/\x{964D}/g;
+  s/\x{FA0A}/\x{898B}/g;
+  s/\x{FA0B}/\x{5ED3}/g;
 }
 
 sub compose_jamo {
@@ -648,8 +923,11 @@ sub compose_jamo {
   s/\x{11BB}\x{11AE}/\x{D7ED}/g;
   s/\x{11BC}\x{11A8}/\x{11EC}/g; # legacy enc
   s/\x{11BC}\x{11A9}/\x{11ED}/g; # legacy enc
+  s/\x{11BC}\x{11B7}/\x{D7F5}/g; # legacy enc ㅇㅁ(ms)
+  s/\x{11BC}\x{11BA}/\x{11F1}/g; # legacy enc ㅇᆺ (ms)
   s/\x{11BC}\x{11BC}/\x{11EE}/g; # legacy enc
   s/\x{11BC}\x{11BF}/\x{11EF}/g; # legacy enc
+  s/\x{11BC}\x{11C2}/\x{D7F6}/g; # legacy enc ㅇᇂ (ms)
   s/\x{11BD}\x{11B8}/\x{D7F7}/g;
   s/\x{11BD}\x{11BD}/\x{D7F9}/g;
   s/\x{11BD}\x{D7E6}/\x{D7F8}/g;

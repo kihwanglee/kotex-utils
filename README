@@ -7,7 +7,7 @@ Introduction
 kotex-utils contains useful scripts and support files for index generation
 aiding typesetting Korean documents. kotex-utils kotex-utf belongs to ko.TeX, 
 a comprehensive Korean typesetting system together with packages kotex-utf,
-kotex-oblivoir, kotex-plain, cjk-ko, XeTeX-ko, and LuaTeX-ko.
+kotex-oblivoir, kotex-plain, cjk-ko, xetexko, and luatexko.
 
 Usage
 -----
@@ -40,7 +40,7 @@ It generates `foo.ind` from `foo.idx` and sorts the index entries according to
 the Korean alphabet order.
 
 kotex-utils also provides `kotexindy.pl`, a wrapper for powerful Unicode index 
-generator `xindy`. If you are using XeTeX-ko or LuaTeX-ko for typesetting Korean,
+generator `xindy`. If you are using xetex-ko or luatex-ko for typesetting Korean,
 it is recommended to use `kotexindy.pl`.
 For more information, please refer to the kotex-utf package documentation.
 
@@ -49,6 +49,42 @@ For more information, please refer to the kotex-utf package documentation.
 `ttf2kotexfont.pl` is a utility for generating tfm files for truetype fonts
 to be used in legacy TeX engines. Please refer to the kotex-utf package 
 documentation for more information.
+
+### hangulhook.sty
+
+`hangulhook.sty` provides a user-definable Hangul syllable hook facility.
+For example, you can do something like the following:
+
+    \documentclass{article}
+    \usepackage{kotex}
+    \setmainhangulfont{HCR Batang LVT}
+    \usepackage{color}
+    \usepackage{hangulhook}
+    \renewcommand\hangulhook[1]{\textcolor{blue}{#1}}
+    \begin{document}
+    \usehangulhook{a가b나c다d라1가2나3다4라}
+    \begin{usehangulhook}
+    abcd
+
+    가나다라
+
+    1234
+    \end{usehangulhook}
+    \end{document}
+
+Compiling the above code with `xelatex` will produce PDF file in which
+every Hangul syllables get colored in blue as instructed by the user 
+redefined `\hangulhook` command.  Keep in mind that this function is 
+only available when the XeLaTeX engine is used.
+
+### hanjahook.sty
+
+`hanjahook.sty` offers a hooking facility for hanja characters.
+It is desinged for manipulate hanja characters in a document-wide fashion,
+For example, to adjust baselines for every hanja characters in a document, you need to
+define `\hanjahook` as follows:
+
+    \def\hanjahook#1{\lower1ex\hbox{#1}}
 
 License
 -------
