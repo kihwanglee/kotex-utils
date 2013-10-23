@@ -1,0 +1,49 @@
+%% File `hanjahook.sty`
+%%
+%% (C) Copyright 2006-2013 Dohyun Kin <nomos at ktug org>
+%%
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3c
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%  http://www.latex-project.org/lppl.txt
+%% and version 1.3c or later is part of all distributions of LaTeX
+%% version 2006/05/20 or later.
+%%
+%% $Id: hanjahook.sty,v 1.1 2011/02/26 10:24:26 nomos Exp $
+%%
+%% 한자 베이스라인 문제의 대처는 일부 구간이 아니라
+%% 문서 전체에 적용되어야 할 경우가 일반적이므로
+%% 문자를 하나하나 다 스캔하며 개행 규칙을 무시하는
+%% hangulhook.sty 방식은 부적합하다.
+%% 대신 \XeTeXinterchartoks 를 이용하기로 한다.
+%%
+\ProvidesPackage{hanjahook}[2011/02/23 v0.1 hooking hanja chars]
+
+\RequirePackage{xetexko}
+
+\def\hanjahook#1{#1}
+%
+% \hanjahook 을 재정의할 것. 이를테면
+%\def\hanjahook#1{\lower1ex\hbox{#1}}
+%
+% hanjahook을 쓰면서 한자 자간을 지시하려면 꼼수를 써야 한다. 이를테면:
+%\def\hanjahook#1{\ifnum\lastskip=2\hskip-.05em\fi\hskip2sp}
+%
+
+\let\XKcjklastchar\XKlastchar
+
+\def\do@hanja@hook#1{\XeTeXinterchartokenstate\z@
+  \hanjahook{#1}\XeTeXinterchartokenstate\@ne\XKendboundary
+}
+
+\edef\XK@save@last@char{\unexpanded\expandafter{\XK@save@last@char
+  \@josa@char@to@number\XK@last@char\count@
+  \let\next\relax
+  % 필요하다면 한자 영역 정의를 추가하라.
+  \ifnum\count@>"33FF \ifnum\count@<"9FCC \let\next\do@hanja@hook \fi\fi
+  \ifnum\count@>"F8FF \ifnum\count@<"FADA \let\next\do@hanja@hook \fi\fi
+  \next
+}}
+
+\endinput
