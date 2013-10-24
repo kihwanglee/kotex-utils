@@ -9,6 +9,11 @@ aiding typesetting Korean documents. kotex-utils kotex-utf belongs to ko.TeX,
 a comprehensive Korean typesetting system together with packages kotex-utf,
 kotex-oblivoir, kotex-plain, cjk-ko, xetexko, and luatexko.
 
+Dependency
+----------
+
+kotex-utils cannot be used without kotex-utf package.
+
 Files
 -----
 
