@@ -2,7 +2,7 @@
 
 # jamo-normalize.pl
 #
-# Copyright (c) 2013 Dohyun Kim <nomos at ktug org>
+# Copyright (c) 2003-2013 Dohyun Kim <nomos at ktug org>
 #
 # This work may be distributed and/or modified under the
 # conditions of the LaTeX Project Public License, either version 1.3c
@@ -11,6 +11,10 @@
 #  http://www.latex-project.org/lppl.txt
 # and version 1.3c or later is part of all distributions of LaTeX
 # version 2006/05/20 or later.
+#
+#   written by Dohyun Kim <nomos at ktug org>
+#   public domain
+#
 
 #use strict;
 #use warnings;
@@ -26,15 +30,17 @@ while (@ARGV) {
   elsif ($opt =~ /-t/i) { $OPT{latintm}     = 1 }
   elsif ($opt =~ /-r/i) { $OPT{reordertm}   = 1 }
   elsif ($opt =~ /-i/i) { $OPT{normalhanja} = 1 }
+  elsif ($opt =~ /-c/i) { $OPT{compatjamo}  = 1 }
   else  {
     print
-    "Usage: $0 [-b] [-d] [-i] [-o] [-p] [-r] [-t] < in_file > out_file\n\n",
-    "Translate Hangul Jamo sequence to Hangul Syllables\n\n",
+    "Usage: $0 [options] < in_file > out_file\n\n",
+    "  Translate Hangul Jamo sequence to Hangul syllables\n\n",
     "  -b :  insert ZWS between syllable blocks (not for practical use)\n",
-    "  -d :  decomposition only, and no more\n",
-    "  -i :  convert compatibility hanja to normal hanja\n",
-    "  -o :  decompose PUA Old Hangul Syllables to Jamo sequence\n",
-    "  -p :  compose Jamo sequence to PUA Old Hangul Syllables\n",
+    "  -c :  convert conjoining Jamo to compatibility Jamo\n",
+    "  -d :  decomposition only, and no further recomposition\n",
+    "  -i :  convert compatibility Hanja to normal Hanja\n",
+    "  -o :  decompose PUA Old Hangul syllables to Jamo sequence\n",
+    "  -p :  compose Jamo sequence to PUA Old Hangul syllables\n",
     "  -r :  reorder Hangul Tone Marks to the first of syllable block\n",
     "        (not for practical use)\n",
     "  -t :  convert U+00B7 or U+003A to Hangul Tone Marks\n";
@@ -116,7 +122,7 @@ while (<>) {
   unless ($OPT{decompose}) {
     &jamo2hypua if $OPT{topua};
     &jamo2syllable;
-    &jamo2jamocomp;
+    &jamo2jamocomp if $OPT{compatjamo};
   }
   &normalize_hanja if $OPT{normalhanja};
   print;
