@@ -6,7 +6,7 @@ Introduction
 
 kotex-utils contains useful scripts and support files for Hangul
 syllable and jamo character conversion and index generation
-aiding typesetting Korean documents. kotex-utils kotex-utf belongs to ko.TeX, 
+aiding typesetting Korean documents. kotex-utils belongs to ko.TeX, 
 a comprehensive Korean typesetting system together with packages kotex-utf,
 kotex-oblivoir, kotex-plain, cjk-ko, xetexko, and luatexko.
 
