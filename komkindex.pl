@@ -47,9 +47,9 @@ print "This is $progname, a makeindex wrapper for ko.TeX package.\n";
 ###
 ### Many thanks to Jinsuk Kim, http://www.jinsuk.pe.kr
 ###
-my @hanja_to_hangul = get_hanja_hangul_table("hanja_hg.tab");
-my @hanjacompat_to_hangul = get_hanja_hangul_table("hjcom_hg.tab");
-my @hanjaextA_to_hangul = get_hanja_hangul_table("hjexa_hg.tab");
+my @hanja_to_hangul = get_hanja_hangul_table("hanja_hangul.tab");
+my @hanjacompat_to_hangul = get_hanja_hangul_table("hanjacom_hangul.tab");
+my @hanjaextA_to_hangul = get_hanja_hangul_table("hanjaexa_hangul.tab");
 
 my @cjamo_jamo =
   qw/

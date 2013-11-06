@@ -22,7 +22,6 @@ Files
 
 	jamo-normalize.pl -> scripts/kotex-utils/
 	komkindex.pl -> scripts/kotex-utils/
-	kotexindy.pl -> scripts/kotex-utils/
 	ttf2kotexfont.py -> scripts/kotex-utils/
 
 ### Makeindex styles
@@ -58,7 +57,7 @@ Major options are:
 * `-p`: convert Unicode jamos to Hanyang PUA syllables.
 * `-t`: convert [U+00B7] and [U+003A] to proper tone markers.
 
-### komkindex.pl and kotexindy.pl
+### komkindex.pl and a xindy module
 
 `komkindex.pl` is a wrapper of standard makeindex utility generating indices for 
 Korean documents. You can use komkindex.pl with an index style file `kotex.ist`
@@ -69,9 +68,9 @@ as follows:
 It generates `foo.ind` from `foo.idx` and sorts the index entries according to
 the Korean alphabet order.
 
-kotex-utils also provides `kotexindy.pl`, a wrapper for powerful Unicode index
+kotex-utils also provides a module for powerful Unicode index
 generator `xindy`. If you are using xetex-ko or luatex-ko for typesetting 
-Korean, it is recommended to use `kotexindy.pl`.
+Korean, it is recommended to use this module.
 For more information, please refer to the kotex-utf package documentation.
 
 ### ttf2kotexfont.pl
