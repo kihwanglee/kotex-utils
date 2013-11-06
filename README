@@ -20,58 +20,76 @@ Files
 
 ### Scripts
 
-	jamo-normalize.pl -> scripts/kotex-utils/
-	komkindex.pl -> scripts/kotex-utils/
-	ttf2kotexfont.py -> scripts/kotex-utils/
+    jamo-normalize.pl -> scripts/kotex-utils/
+    komkindex.pl -> scripts/kotex-utils/
+    ttf2kotexfont.py -> scripts/kotex-utils/
 
 ### Makeindex styles
 
-	kotex.ist -> makeindex/kotex-utils/
-	memucs-manual.ist -> makeindex/kotex-utils/
+    kotex.ist -> makeindex/kotex-utils/
+    memucs-manual.ist -> makeindex/kotex-utils/
 
-### Xindy styles
+### Xindy modules
 
-	utf8-lang.xdy -> xindy/modules/lang/korean
-	utf8.xdy -> xindy/modules/lang/korean
+    utf8-lang.xdy -> xindy/modules/lang/korean
+    utf8.xdy -> xindy/modules/lang/korean
 
 ### Documents
 
-	README (this file) -> doc/latex/kotex-utils/
+    README (this file) -> doc/latex/kotex-utils/
 
 Usage
 -----
 
 ### jamo-normalize.pl
 
-`jamo-normalize.pl` is used for converting Unicode Hangul jamos to Unicode 
-syllables and vice versa. It has a simple usage as follows:
+`jamo-normalize.pl` is used for normalizing Hangul text.
+It translates Hangul Jamo sequence to precomposed Hangul Syllables. 
+It has a simple usage as follows:
 
-    $ jamo-normalize.pl [option] < infile > outfile
+    $ perl jamo-normalize.pl [option] < infile > outfile
 
-Major options are:
+Options are:
 
-* `-d`: convert Unicode syllables to jamos
-* `-h`: show help message
-* `-i`: convert CJK compatibility ideographs (Chinese characters) to CJK unified ideographs
-* `-o`: convert Hanyang PUA syllables to Unicode jamos
-* `-p`: convert Unicode jamos to Hanyang PUA syllables.
-* `-t`: convert [U+00B7] and [U+003A] to proper tone markers.
+* `-b`: insert Zero Width Space between Hangul syllable blocks. 
+This option is just for a proof of concept. Do not use in practice.
+* `-c`: convert conjoining Jamo to compatibility Jamo if reasonable.
+* `-d`: only decompose Hangul syllables and no further recomposition. Not
+recommended for a practical use.
+* `-i`: convert CJK Compatibility Ideographs to normal CJK Ideographs
+* `-o`: decompose PUA Old Hangul syllables to Hangul Jamo sequence
+* `-p`: translate Jamo sequence to PUA Old Hangul syllables. Not recommended for
+a practical use.
+* `-r`: reorder Hangul Tone Marks to the first position of syllable block. This
+option is just for a proof of concept. Do not use in practice.
+* `-t`: convert U+00B7 (·) or U+003A (:) to Hangul Tone Marks
 
-### komkindex.pl and a xindy module
+### komkindex.pl
 
 `komkindex.pl` is a wrapper of standard makeindex utility generating indices for 
 Korean documents. You can use komkindex.pl with an index style file `kotex.ist`
 as follows:
 
-    $ komkindex.pl -s kotex foo
+    $ perl komkindex.pl -s kotex foo
 
 It generates `foo.ind` from `foo.idx` and sorts the index entries according to
 the Korean alphabet order.
 
-kotex-utils also provides a module for powerful Unicode index
-generator `xindy`. If you are using xetex-ko or luatex-ko for typesetting 
-Korean, it is recommended to use this module.
-For more information, please refer to the kotex-utf package documentation.
+### xindy modules
+
+kotex-utils also provides modules for powerful Unicode index
+generator `xindy`. If you are using xetexko or luatexko for typesetting 
+Korean, it is recommended to use these modules for sorting Hangul
+index entries. It only supports UTF-8 encoding.
+If these modules are placed in a propor directory as suggest above,
+you can use them as follows:
+
+
+    $ texindy -L korean -I omega foo.idx
+
+or
+
+    $ xindy -M texindy -L korean -C utf8 foo.idx
 
 ### ttf2kotexfont.pl
 
