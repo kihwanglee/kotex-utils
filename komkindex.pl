@@ -278,6 +278,10 @@ foreach my $file (@IDXfiles) {
         my @ybody = split /(?<!\Q$ist_quote\E])\Q$ist_actual\E/, $_;
         $_ = $ybody[0];
 
+        s/[{}]//g;
+        s/\\[A-Za-z]+//g;
+        s/^\s+//;
+
         &hanja_to_hangul;
         s/([\x{AC00}-\x{D7A3}])/syllable_to_jamo_chr($1)/ge;
         s/([\x{3131}-\x{318E}])/cjamo_to_jamo_chr($1)/ge;

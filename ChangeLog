@@ -1,0 +1,58 @@
+2013-11-08  Kihwang Lee  <leekh at ktug org>
+
+	No version change
+
+	* ChangeLog: recovered
+
+2013-11-07  Dohyun Kim  <nomos at ktug org>
+
+	No version change
+
+	* komkindex.pl: minor revision
+
+2013-11-06  Kihwang Lee  <leekh at ktug org>
+
+	No version change, CTAN update
+
+	* ChangeLog: removed
+	* README: revised for new Xindy modules and jamo-normalize.pl
+
+2013-11-06  Dohyun Kim  <nomos at ktug org>
+
+	No version change
+
+	* kotexindy.pl: removed
+	* utf8-lang.xdy: revamped to avoid proprocessing
+	* utf8.xdy: revamped to avoid proprocessing
+
+2013-11-06  Kihwang Lee  <leekh at ktug org>
+
+	No version change
+
+	* komkindex.pl: updated for ko.TeX 2.0
+
+2013-10-30  Dohyun Kim  <nomos at ktug org>
+
+	No version change
+
+	* jamo-normalize.pl: minor revision
+
+2013-10-30  Kihwang Lee  <leekh at ktug org>
+
+	No version change
+
+	* hangulhook.sty: removed
+	* hanjahook.sty: removed
+
+2013-10-24  Kihwang Lee  <leekh at ktug org>
+
+	No version change
+	
+	* Uploaded to CTAN
+
+2013-10-21  Kihwang Lee  <leekh at ktug org>
+
+	Version 2.0.0
+
+	* kotex-utils packaging, uploaded to https://github.com/kihwanglee/kotex-utils
+
