@@ -293,13 +293,15 @@ foreach my $file (@IDXfiles) {
 
         $ybody[0] = $_;
 
+        my $tmpkey = $ybody[1];
+        $tmpkey =~ s/(?<!\Q$ist_quote\E])\Q$ist_quote\E//g;
         my @tmp = split "",$ybody[0];
-        $idxhash{ $ybody[1] } = $tmp[0];	# for grouping routine
+        $idxhash{ $tmpkey } = $tmp[0];	# for grouping routine
         if ( $tmp[0] =~ /^\x{F801}/ ) {   # 초성채움.
-          $idxhash{ $ybody[1] } = $tmp[1];
+          $idxhash{ $tmpkey } = $tmp[1];
         }
         if ( $tmp[0] =~ /^\x{F806}/ ) {   # 중성채움.
-          $idxhash{ $ybody[1] } = $tmp[2];
+          $idxhash{ $tmpkey } = $tmp[2];
         }
 
         $_ = join $ist_actual,@ybody;
