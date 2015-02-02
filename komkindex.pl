@@ -294,7 +294,7 @@ foreach my $file (@IDXfiles) {
         $ybody[0] = $_;
 
         my $tmpkey = $ybody[1];
-        $tmpkey =~ s/(?<!\Q$ist_quote\E])\Q$ist_quote\E//g;
+        $tmpkey =~ s/\Q$ist_quote\E(.)/$1/g;
         my @tmp = split "",$ybody[0];
         $idxhash{ $tmpkey } = $tmp[0];	# for grouping routine
         if ( $tmp[0] =~ /^\x{F801}/ ) {   # 초성채움.
