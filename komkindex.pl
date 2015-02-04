@@ -243,6 +243,7 @@ $makeindexoption .= " -p $args{p}" if $args{p};
 ### read .idx files
 ###
 my ( @idxarr, %idxhash );
+my $notquote = '(?<![^\\\\][\\\\\\Q$ist_quote\\E])';
 foreach my $file (@IDXfiles) {
   open IDX,"<:utf8",$file or die "$file : $!\n";
   while (<IDX>) {
@@ -252,30 +253,30 @@ foreach my $file (@IDXfiles) {
     #    \indexentry{ ..... }{ .. }
     # -> $pre         $body $post
     if (/(\Q$ist_keyword\E\s*\Q$ist_arg_open\E)
-         (.*?[^\Q$ist_quote\E])
+         (.*)
          (\Q$ist_arg_close$ist_arg_open\E.+?\Q$ist_arg_close\E)
          $/x) {
       my($pre,$body,$post) = ($1,$2,$3);
 
       #    \indexentry{ ..... | .. }{ .. }
       # -> $pre         $body $post
-      my @xbody = split /(?<!\Q$ist_quote\E)\Q$ist_encap/,$body;
+      my @xbody = split /$notquote\Q$ist_encap/,$body;
       for ( my $i=$#xbody; $i>0; $i--) {
         $post = $ist_encap.$xbody[$i].$post;
       }
       $body = $xbody[0];
 
       # !을 경계로 가름.
-      @xbody = split /(?<!\Q$ist_quote\E)\Q$ist_level/, $body;
+      @xbody = split /$notquote\Q$ist_level/, $body;
 
       for (@xbody) {
         # @이 없으면... 넣어준다.
-        unless (/[^\Q$ist_quote\E]\Q$ist_actual/) {
+        unless (/$notquote\Q$ist_actual/) {
           $_ = $_.$ist_actual.$_;
         }
 
         # @을 경계로 가름.
-        my @ybody = split /(?<!\Q$ist_quote\E)\Q$ist_actual\E/, $_;
+        my @ybody = split /$notquote\Q$ist_actual\E/, $_;
         $_ = $ybody[0];
 
         s/[{}]//g;
@@ -312,6 +313,7 @@ foreach my $file (@IDXfiles) {
   }
   close IDX;
 }
+
 
 ###
 ### run makeindex
