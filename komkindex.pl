@@ -275,7 +275,7 @@ foreach my $file (@IDXfiles) {
         }
 
         # @을 경계로 가름.
-        my @ybody = split /(?<!\Q$ist_quote\E])\Q$ist_actual\E/, $_;
+        my @ybody = split /(?<!\Q$ist_quote\E)\Q$ist_actual\E/, $_;
         $_ = $ybody[0];
 
         s/[{}]//g;
