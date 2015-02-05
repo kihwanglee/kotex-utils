@@ -243,7 +243,6 @@ $makeindexoption .= " -p $args{p}" if $args{p};
 ### read .idx files
 ###
 my ( @idxarr, %idxhash );
-my $notquote = '(?<![^\\\\][\\\\\\Q$ist_quote\\E])';
 foreach my $file (@IDXfiles) {
   open IDX,"<:utf8",$file or die "$file : $!\n";
   while (<IDX>) {
@@ -260,28 +259,27 @@ foreach my $file (@IDXfiles) {
 
       #    \indexentry{ ..... | .. }{ .. }
       # -> $pre         $body $post
-      my @xbody = split /$notquote\Q$ist_encap/,$body;
+      my @xbody = split /(?<!(?<!\\)[\\\Q$ist_quote\E])\Q$ist_encap/,$body;
       for ( my $i=$#xbody; $i>0; $i--) {
         $post = $ist_encap.$xbody[$i].$post;
       }
       $body = $xbody[0];
 
       # !을 경계로 가름.
-      @xbody = split /$notquote\Q$ist_level/, $body;
+      @xbody = split /(?<!(?<!\\)[\\\Q$ist_quote\E])\Q$ist_level/, $body;
 
       for (@xbody) {
         # @이 없으면... 넣어준다.
-        unless (/$notquote\Q$ist_actual/) {
+        unless (/(?<!(?<!\\)[\\\Q$ist_quote\E])\Q$ist_actual/) {
           $_ = $_.$ist_actual.$_;
         }
 
         # @을 경계로 가름.
-        my @ybody = split /$notquote\Q$ist_actual\E/, $_;
+        my @ybody = split /(?<!(?<!\\)[\\\Q$ist_quote\E])\Q$ist_actual\E/, $_;
         $_ = $ybody[0];
 
-        s/[{}]//g;
-        s/\\[A-Za-z]+//g;
-        s/^\s+//;
+        s/(?<!\\)\\[A-Za-z]+\s*//g;
+        s/(?<!\\)[{}]//g;
 
         &hanja_to_hangul;
         s/([\x{AC00}-\x{D7A3}])/syllable_to_jamo_chr($1)/ge;
@@ -313,7 +311,6 @@ foreach my $file (@IDXfiles) {
   }
   close IDX;
 }
-
 
 ###
 ### run makeindex
