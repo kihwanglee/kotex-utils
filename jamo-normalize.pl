@@ -525,6 +525,8 @@ sub normalize_hanja {
   s/\x{FA09}/\x{964D}\x{FE00}/g;
   s/\x{FA0A}/\x{898B}\x{FE00}/g;
   s/\x{FA0B}/\x{5ED3}\x{FE00}/g;
+  s/\x{FA2E}/\x{90DE}\x{FE00}/g;
+  s/\x{FA2F}/\x{96B7}\x{FE00}/g;
 }
 
 sub compose_jamo {
