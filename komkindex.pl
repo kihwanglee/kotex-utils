@@ -3,7 +3,7 @@
 
 # komkindex.pl
 #
-# Copyright (c) 2007-2013 Dohyun Kim <nomos at ktug org>
+# Copyright (c) 2007-2015 Dohyun Kim <nomos at ktug org>
 #
 # This work may be distributed and/or modified under the
 # conditions of the LaTeX Project Public License, either version 1.3c
@@ -159,16 +159,16 @@ if ($args{s}) {
 }
 
 $idx0 = $IDXfiles[0];
-$idx0 =~s/\.idx$//;
+$idx0 =~ s/\.idx$//i;
 
 $indfile = $args{o} || $idx0;
-$indfile =~ /(\..+?)$/ or $indfile .= ".ind";
+$indfile =~ /\.ind$/i or $indfile .= ".ind";
 
 $logfile = $args{t} || $idx0;
-$logfile =~ /(\..+?)$/ or $logfile .= ".ilg";
+$logfile =~ /\.ilg$/i or $logfile .= ".ilg";
 
 foreach my $file (@IDXfiles) {
-  $file =~ /(\..+?)$/ or $file .= ".idx";
+  $file =~ /\.idx$/i or $file .= ".idx";
 }
 
 ###
