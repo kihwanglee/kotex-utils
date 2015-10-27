@@ -1,6 +1,21 @@
-2013-11-08  Kihwang Lee  <leekh at ktug org>
+2015-10-27  Dohyun Kim  <nomos at ktug org>
+
+	Version 2.1.0
+
+	* komkindex.pl: fix bug reported at http://www.ktug.org/xe/214257
+	* jamo-normalize.pl: 2 more compatiblity ideographs
+
+2015-02-04  Dohyun Kim  <nomos at ktug org>
 
 	No version change
+
+	* fix bug: http://www.ktug.org/xe/194279
+	* fixes of previous commit
+	* fix an old typo
+
+2013-11-08  Kihwang Lee  <leekh at ktug org>
+
+	Version 2.0.1
 
 	* ChangeLog: recovered
 
