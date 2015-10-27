@@ -161,11 +161,9 @@ if ($args{s}) {
 $idx0 = $IDXfiles[0];
 $idx0 =~ s/\.[A-Za-z]+$//;
 
-$indfile = $args{o} || $idx0;
-$indfile =~ /\.ind$/i or $indfile .= ".ind";
+$indfile = $args{o} ? $args{o} : $idx0 . ".ind";
 
-$logfile = $args{t} || $idx0;
-$logfile =~ /\.ilg$/i or $logfile .= ".ilg";
+$logfile = $args{t} ? $args{t} : $idx0 . ".ilg";
 
 foreach my $file (@IDXfiles) {
   $file =~ /\.[A-Za-z]+$/ or $file .= ".idx";
