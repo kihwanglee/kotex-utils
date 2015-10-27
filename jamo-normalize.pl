@@ -2,7 +2,7 @@
 
 # jamo-normalize.pl
 #
-# Copyright (c) 2003-2013 Dohyun Kim <nomos at ktug org>
+# Copyright (c) 2003-2015 Dohyun Kim <nomos at ktug org>
 #
 # This work may be distributed and/or modified under the
 # conditions of the LaTeX Project Public License, either version 1.3c
